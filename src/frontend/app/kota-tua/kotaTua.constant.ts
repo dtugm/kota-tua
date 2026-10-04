@@ -5,8 +5,8 @@ import { Cartesian3, Math as CesiumMath, Ion } from "cesium";
 Ion.defaultAccessToken = process.env.NEXT_PUBLIC_CESIUM_ACCESS_TOKEN as string;
 
 const STADIA_API_KEY = process.env.NEXT_PUBLIC_STADIA_API_KEY || "";
-const stadiaUrl = (style: string) =>
-  `https://tiles.stadiamaps.com/tiles/${style}/{z}/{x}/{y}.jpg?api_key=${STADIA_API_KEY}`;
+const stadiaUrl = (style: string, ext = "jpg") =>
+  `https://tiles.stadiamaps.com/tiles/${style}/{z}/{x}/{y}.${ext}?api_key=${STADIA_API_KEY}`;
 
 // TomTom traffic imagery provider
 // Basemap URLs
@@ -34,12 +34,10 @@ export const IMAGERY_CONFIG: Record<string, ImageryConfig> = {
       "https://digital-twin-ugm.s3.ap-southeast-1.amazonaws.com/kota-tua/basemap/1650/{z}/{x}/{reverseY}.png",
   },
   "2023": {
-    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-    options: { subdomains: ["a", "b", "c", "d"] },
+    url: stadiaUrl("alidade_smooth", "png"),
   },
   "2024": {
-    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-    options: { subdomains: ["a", "b", "c", "d"] },
+    url: stadiaUrl("alidade_smooth", "png"),
   },
 };
 
@@ -60,7 +58,7 @@ export const BASEMAP_OPTIONS = [
   },
   {
     label: "Free Map",
-    value: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+    value: stadiaUrl("alidade_smooth", "png"),
   },
   {
     label: "OpenStreetMap",

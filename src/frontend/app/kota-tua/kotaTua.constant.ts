@@ -20,18 +20,19 @@ interface ImageryConfig {
 export const IMAGERY_CONFIG: Record<string, ImageryConfig> = {
   "1619": {
     url: stadiaUrl("stamen_terrain_background"),
-    overlayUrl:
-      "https://digital-twin-ugm.s3.ap-southeast-1.amazonaws.com/kota-tua/basemap/1619/{z}/{x}/{reverseY}.png",
+    overlayUrl: "https://bucket.dt-jakarta.geo-ai.id/kota-tua/maps/1619/{z}/{x}/{y}.png",
   },
   "1627": {
     url: stadiaUrl("stamen_watercolor"),
-    overlayUrl:
-      "https://digital-twin-ugm.s3.ap-southeast-1.amazonaws.com/kota-tua/basemap/1627/{z}/{x}/{reverseY}.png",
+    overlayUrl: "https://bucket.dt-jakarta.geo-ai.id/kota-tua/maps/1627/{z}/{x}/{y}.png",
+  },
+  "1635": {
+    url: "https://tile.openstreetmap.de/{z}/{x}/{y}.png",
+    overlayUrl: "https://bucket.dt-jakarta.geo-ai.id/kota-tua/maps/1635/{z}/{x}/{y}.png",
   },
   "1650": {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-    overlayUrl:
-      "https://digital-twin-ugm.s3.ap-southeast-1.amazonaws.com/kota-tua/basemap/1650/{z}/{x}/{reverseY}.png",
+    overlayUrl: "https://bucket.dt-jakarta.geo-ai.id/kota-tua/maps/1650/{z}/{x}/{y}.png",
   },
   "2023": {
     url: stadiaUrl("alidade_smooth", "png"),

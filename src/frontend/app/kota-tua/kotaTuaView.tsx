@@ -91,6 +91,7 @@ export default function KotaTuaView() {
   const [rightOverlayOpacity, setRightOverlayOpacity] = useState(0.7);
 
   const [showToponimi, setShowToponimi] = useState(true);
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [toponymFeatures, setToponymFeatures] = useState<GeoJSONFeature[]>([]);
 
   useEffect(() => {
@@ -112,6 +113,15 @@ export default function KotaTuaView() {
     setRightBasemap("default");
     setShowRightOverlay(false);
   }, [rightEpoch]);
+
+  // Drag the split handle; position is relative to the split overlay width
+  const splitOverlayRef = useRef<HTMLDivElement>(null);
+  const handleSplitDrag = useCallback((e: React.PointerEvent) => {
+    const rect = splitOverlayRef.current?.getBoundingClientRect();
+    if (!rect || !e.currentTarget.hasPointerCapture(e.pointerId)) return;
+    const pos = (e.clientX - rect.left) / rect.width;
+    setSplitPosition(Math.min(1, Math.max(0, pos)));
+  }, []);
 
   // Sync split position with Cesium scene
   useEffect(() => {
@@ -320,6 +330,28 @@ export default function KotaTuaView() {
         ))}
       </Viewer>
 
+      {/* Split line with draggable handle */}
+      <div
+        ref={splitOverlayRef}
+        className="absolute inset-0 pointer-events-none z-40"
+      >
+        <div
+          className="absolute top-0 bottom-0 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_4px_rgba(0,0,0,0.5)]"
+          style={{ left: `${splitPosition * 100}%` }}
+        >
+          <button
+            type="button"
+            aria-label="Drag to move split"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-600 text-sm cursor-ew-resize pointer-events-auto touch-none select-none"
+            onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
+            onPointerMove={handleSplitDrag}
+            onPointerUp={(e) => e.currentTarget.releasePointerCapture(e.pointerId)}
+          >
+            ◀▶
+          </button>
+        </div>
+      </div>
+
       {/* Control Panel */}
       <div className="absolute top-4 left-4 pointer-events-none z-50">
         <Card className="w-[300px] bg-white/40 backdrop-blur-xl border border-white/20 shadow-2xl pointer-events-auto rounded-2xl overflow-hidden">
@@ -335,10 +367,23 @@ export default function KotaTuaView() {
                 </p>
                 <p className="text-xs text-white/70">Split-Screen Viewer</p>
               </div>
+              <button
+                type="button"
+                aria-label={isPanelCollapsed ? "Expand panel" : "Collapse panel"}
+                aria-expanded={!isPanelCollapsed}
+                className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
+                onClick={() => setIsPanelCollapsed((c) => !c)}
+              >
+                <span
+                  className={`text-xs transition-transform ${isPanelCollapsed ? "" : "rotate-180"}`}
+                >
+                  ▼
+                </span>
+              </button>
             </div>
           </CardHeader>
 
-          <CardBody className="gap-4 p-4">
+          <CardBody className={`gap-4 p-4 ${isPanelCollapsed ? "hidden" : ""}`}>
             {/* Epoch Selection */}
             <div className="grid grid-cols-2 gap-4">
               {/* Left Side */}
